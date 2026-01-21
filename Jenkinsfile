@@ -6,11 +6,6 @@ pipeline {
     }
 
     stages {
-        stage('Clone') {
-            steps {
-                git branch: 'develop', url: 'https://github.com/zakariae-zrimek/cargo-tracker.git'
-            }
-        }
 
         stage('Build & Test') {
             steps {
