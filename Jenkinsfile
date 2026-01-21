@@ -2,48 +2,29 @@ pipeline {
     agent any
 
     triggers {
-        githubPush()   
+        githubPush()
     }
 
     stages {
-
         stage('Clone') {
             steps {
-                git branch: 'develop', url: 'https://github.com/akito-sama/cargo-tracker.git'
+                git branch: 'develop', url: 'https://github.com/zakariae-zrimek/cargo-tracker.git'
             }
         }
 
-        stage('Build & Test with Coverage') {
+        stage('Build & Test') {
             steps {
-                bat 'mvn clean verify'
-            }
-        }
-
-        stage('SonarQube Analysis') {
-            environment {
-                SONAR_TOKEN = credentials('sonar-token-id')
-            }
-            steps {
-                withSonarQubeEnv('SonarQube Local') {
-                    bat """
-                        mvn sonar:sonar ^
-                        -Dsonar.projectKey=cargo-tracker ^
-                        -Dsonar.projectName="Cargo Tracker" ^
-                        -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml ^
-                        -Dsonar.host.url=http://localhost:9000 ^
-                        -Dsonar.token=%SONAR_TOKEN%
-                    """
-                }
+                sh 'mvn clean verify'
             }
         }
     }
-//
+
     post {
         success {
-            echo 'Build et analyse terminés avec succès !'
+            echo 'Build et tests terminés avec succès ✅'
         }
         failure {
-            echo 'Échec du build ou des tests.'
+            echo 'Échec du build ou des tests ❌'
         }
     }
 }
